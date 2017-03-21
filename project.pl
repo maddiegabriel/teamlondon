@@ -8,7 +8,6 @@
 #   PROBLEMS:
 #       doesn't read lines containing 'é' (Québec, Montréal) 
 #           >> lines 558691 to 766105
-#           >> SOLUTION: global replace é and Ë with e
 #       graphing
 #
 use strict;
@@ -62,7 +61,7 @@ foreach my $record ( @data ) {
         if ($fields[5] =~ /\.2$/) {
             my %data = (
                 year => $fields[0],
-                crime_data => $fields[5],
+                coordinate => $fields[5],
                 value => $fields[6]
             );
 
@@ -72,12 +71,12 @@ foreach my $record ( @data ) {
             push @crime_data, \%data;
         }
     } else {
-        warn "Line/record could not be parsed :: $line_count.\n";
+        warn "Line/record could not be parsed: $line_count.\n";
     }
     
     # check if reading file correctly: print every 10000th line if read correctly
     if ($line_count % 10000 == 0) {
-        print "ON LINE :: $line_count\n";
+        print "ON LINE: $line_count\n";
     }
 
     $line_count++;
@@ -109,10 +108,10 @@ my %cities = (
     moncton => 43,
     saint_john => 8,
     saguenay => 10,
-#   quebec => 11,
+    quebec => 11,
     sherbrooke => 12,
-#   trois_rivieres => 13,
-#   montreal => 14,
+    trois_rivieres => 13,
+    montreal => 14,
     ottawa_gatineau_quebec => 15,
     ottawa_gatineau_both => 17,
     ottawa_gatineau_ontario => 18,
@@ -148,37 +147,53 @@ sub aggregate_data {
 
     # Build an array of possible crime_data values using:
     # ('provinces' or 'cities' hash value) + (the violation number) + '.2'
-    my @crime_data_keys;
+    my @coordinate_keys;
     my $current_value;
+    my $current_location;
 
-    # if entered 1 for province
+    # if entered 1 for province, go through provinces hash
+    # create array of desired coordinates using province.violation.2 
     if ($is_province) {
         for my $key (values %provinces) {
-            push @crime_data_keys, "$key.$violation.2";
+            push @coordinate_keys, "$key.$violation.2";
         }
-    # if entered 0 for city
+
+    # if entered 0 for city, go through cities hash
+    # create array of desired coordinates using city.violation.2 
     } else {
         for my $key (values %cities) {
-            push @crime_data_keys, "$key.$violation.2";
+            push @coordinate_keys, "$key.$violation.2";
         }
     }
-    
+
+    # go through crime_data array (has crime hashes containing year, coordinate, value)
     foreach my $crime_record ( @crime_data ) {
+
         my %record = %{$crime_record};
 
+        # if year in current hash = year given by user
         if ($record{year} eq $year) {
-            foreach my $crime_data_key ( @crime_data_keys ) {
-                if ($record{crime_data} eq $crime_data_key) {
+            # sort thorugh coordinates we created using (province/city).violation.2
+            foreach my $coordinate_key ( @coordinate_keys ) {
+                # if coordinate in current hash = coordinate we created 
+                if ($record{crime_data} eq $coordinate_key) {
                     # print Dumper(\%record);
 
+                    # SORT VALUES!!! if not first loop..
                     if ($current_value) {
+                        # if user wants highest value, and value in hash is greater than current highest value
+                        # set current_value to the record value
                         if ($is_highest == 1 and $record{value} > $current_value) {
-                            $current_value = $record{value};       
+                            $current_value = $record{value}; 
+                            $current_location = $coordinate_key;      
                         }
-
+                        # if user wants lower value, and value in hash is lesser than current lowest value
+                        # set current_value to the record value
                         if ($is_highest == 0 and $record{value} < $current_value) {
-                            $current_value = $record{value};       
+                            $current_value = $record{value};  
+                            $current_location = $coordinate_key;      
                         }
+                    # if first loop: set value in hash equal to current_value
                     } else {
                         $current_value = $record{value};       
                     }
@@ -186,11 +201,14 @@ sub aggregate_data {
             }
         }
     }
-
+    # if no value is found (current_value never defined), print error
     unless (defined $current_value) {
         $current_value = "Value not found.\n";
     }
-    return $current_value;
+
+    my @return_array = ($current_value, $current_location);
+    # return highest/lowest value
+    return \@return_array;
 }
 
 # USER INTERFACE
@@ -229,15 +247,19 @@ my $year = <STDIN>;
 chomp $year;
 
 my $result = aggregate_data($year, $violation_number, $is_province, $is_highest);
+my @answer = @$result;
+print Dumper(@answer);
 
 # RETURN OUTPUT
-print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
+print "~~~~~~~~~~ RESULT ~~~~~~~~~~\n\n";
+
 if($is_highest) {
-    print("The highest rate in $year is $result.\n");
+    print "The highest rate of $violation_number is [0]. It occurs in [1].\n";
 } else {
-    print("The lowest rate in $year is $result.\n");
+    print "The lowest rate of $violation_number is [0]. It occurs in [1].\n";
 }
-print "~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
+
+print "~~~~~~~~~~  END  ~~~~~~~~~~\n";
 # # Lowest value in city
 #print aggregate_data("2003", "2", 0, 0), "\n";
 # # Lowest value in province
