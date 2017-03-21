@@ -8,6 +8,7 @@
 #   PROBLEMS:
 #       doesn't read lines containing 'é' (Québec, Montréal) 
 #           >> lines 558691 to 766105
+#           >> SOLUTION: global replace é and Ë with e
 #       graphing
 #
 use strict;
@@ -205,7 +206,7 @@ print "Highest or Lowest (1 for highest, 0 for lowest): ";
 my $is_highest = <STDIN>;
 chomp $is_highest;
 
-print "     \n\n~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
+print "         \n\n~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
 print "     Abduction under the age 14, not parent or guardian     39\n";
 print "     Arson                                                  84\n";
 print "     Dangerous vehicle operation, causing death            161\n";
@@ -227,10 +228,16 @@ print "Year (1998-2015): ";
 my $year = <STDIN>;
 chomp $year;
 
+my $result = aggregate_data($year, $violation_number, $is_province, $is_highest);
+
 # RETURN OUTPUT
-print "~~~~~~~~~~ RESULT ~~~~~~~~~~\n";
-print aggregate_data($year, $violation_number, $is_province, $is_highest), "\n";
-print "~~~~~~~~~~ LATER, LOSER ~~~~~~~~~~\n";
+print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
+if($is_highest) {
+    print("The highest rate in $year is $result.\n");
+} else {
+    print("The lowest rate in $year is $result.\n");
+}
+print "~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
 # # Lowest value in city
 #print aggregate_data("2003", "2", 0, 0), "\n";
 # # Lowest value in province
