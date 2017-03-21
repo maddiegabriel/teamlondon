@@ -206,9 +206,8 @@ sub aggregate_data {
         $current_value = "Value not found.\n";
     }
 
-    my @return_array = ($current_value, $current_location);
     # return highest/lowest value
-    return \@return_array;
+    return $current_value;
 }
 
 # USER INTERFACE
@@ -247,19 +246,16 @@ my $year = <STDIN>;
 chomp $year;
 
 my $result = aggregate_data($year, $violation_number, $is_province, $is_highest);
-my @answer = @$result;
-print Dumper(@answer);
 
 # RETURN OUTPUT
-print "~~~~~~~~~~ RESULT ~~~~~~~~~~\n\n";
-
+print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
 if($is_highest) {
-    print "The highest rate of $violation_number is [0]. It occurs in [1].\n";
+    print("The highest rate in $year is $result.\n");
 } else {
-    print "The lowest rate of $violation_number is [0]. It occurs in [1].\n";
+    print("The lowest rate in $year is $result.\n");
 }
+print "~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
 
-print "~~~~~~~~~~  END  ~~~~~~~~~~\n";
 # # Lowest value in city
 #print aggregate_data("2003", "2", 0, 0), "\n";
 # # Lowest value in province
