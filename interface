@@ -2,28 +2,26 @@
 
 #
 #   CIS*2250 Project: Team London
-#   User Interfaces
+#   User Interface
 #
 
 use strict;
-use warnings;
 
-my $setQ; 
-my $respond1;
-my $respond2;
-my $respond3;
-my $respond4;
-my $respond5;
-my $flag = 0;
-my $mainFlag = 0;
-my $exitFlag = 0;
-my $programFlag = 0;
+my ($setQ, $respond1, $respond2, $respond3, $respond4, $respond5) = 0;
+my ($flag, $mainFlag, $exitFlag, $programFlag) = 0;
 
-print "Welcome to our program!\nPlease type in the number corresponding to your choice.\nPRESS 9 TO EXIT.\n";
+print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Welcome to Team London's program!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+print "\nINSTRUCTIONS:\n >> Please enter the numbers corresponding to your choices.\n >> PRESS 9 TO EXIT.\n";
 
 while ($programFlag == 0) {
 	while ($mainFlag == 0) {
-		print "Would you like to pick quesiton set 1, 2 or 3? ";
+		
+		print "\nQUESTION TYPES:"; 
+		print "\nQuestion Set 1: What location had the highest/lowest rate of a specific violation in a specific year?";
+		print "\nQuestion Set 2: What location had the highest/lowest percent change in a specific violation between two years?";
+		print "\nQuestion Set 3: What was the safest/least safe place to do different things in Canada in a specific year?";
+		
+		print "\n\nWould you like to pick Quesiton Set 1, 2 or 3? ";
 		$setQ = <STDIN>;
 		chomp $setQ;
 
@@ -36,89 +34,45 @@ while ($programFlag == 0) {
 		}
 
 		$flag = 0;
+		
 		if ($setQ == 1) {
-			print "FILL IN THE BLANKS:\nWhat is the (safest/least safe) (province/city) to (desired action) in (year)?\n";
+			print "\nFILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) rate of (violation) in (year)?\n";
 			while ($flag == 0) {
-				print "What is the\n";
-				print "0. Most safe\n";
-				print "1. least safe\n";
+				print "\nProvince or city? (1 for province, 2 for city): ";
 				$respond1 = <STDIN>;
 				chomp $respond1;
-					if ($respond1 == 1 || $respond1 == 0) {
-						$flag = 1;
-					}
-			}
-
-			$flag = 0;
-			while ($flag == 0) {
-				print "0. Province\n";
-				print "1. City\n";
-				$respond2 = <STDIN>;
-				chomp $respond2;
-				if ($respond2 == 1 || $respond2 == 0) {
+				if ( ($respond1 == 1 || $respond1 == 2) && $respond1 != '') {
 					$flag = 1;
 				}
 			}
 
 			$flag = 0;
-			print "to\n";
-			while ($flag == 0) {
-				print "0. Raise a child\n";
-				print "1. Drive\n"; 
-				print "2. Live\n";
-				print "3. Start a business\n";
-				print "4. Own a home\n";
-				$respond3 = <STDIN>;
-				chomp $respond3;
-				if ($respond3 == 1 || $respond3 == 2 || $respond3 == 3 || $respond3 == 4 || $respond3 == 0) {
-					$flag = 1;
-				}
-			}
-			$flag = 0; 
-				#year
-		} 
-		elsif ($setQ == 2) {
-			print "FILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) rate of (violation) in (year)?\n";
-			
-			print "\nWhat\n";
-			while ($flag == 0) {
-				print "0. Province\n";
-				print "1. City\n";
-				$respond1 = <STDIN>;
-				chomp $respond1;
-				if ($respond1 == 1 || $respond1 == 0) {
-					$flag = 1;
-				}
-			}
-
-			$flag = 0;
-			print "had the\n";
 			while ($flag == 0) { 
-				print "0. Highest\n";
-				print "1. Lowest\n";
+				print "\nHighest or Lowest (1 for highest, 2 for lowest): ";
 				$respond2 = <STDIN>;
 				chomp $respond2;
-				if ($respond2 == 1 || $respond2 == 0) {
+				if (($respond2 == 1 || $respond2 == 2) && $respond2 != '') {
 					$flag = 1;
 				}
 			}
 
 			$flag = 0;
-			print "\nrate of\n";
+			print "\n\n     ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
+			print "     Abduction under the age 14, not parent or guardian     39\n";
+			print "     Arson                                                  84\n";
+			print "     Dangerous vehicle operation, causing death            161\n";
+			print "     Luring a child                                         21\n";
+			print "     Participate in activity of terrorist group            128\n";
+			print "     Total breaking and entering                            65\n";
+			print "     Total Criminal Code traffic violations                148\n";
+			print "     Total Impaired Driving                                149\n";
+			print "     Total robbery                                          34\n";
+			print "     Total violent Criminal Code violations                  4\n";
+			print "     Shoplifting \$5,000 or under                            79\n";
+			print "     Total sexual violations against children               17\n";
+				
 			while ($flag == 0){
-				print "             \n\n~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
-				print "     Abduction under the age 14, not parent or guardian     39\n";
-				print "     Arson                                                  84\n";
-				print "     Dangerous vehicle operation, causing death            161\n";
-				print "     Luring a child                                         21\n";
-				print "     Participate in activity of terrorist group            128\n";
-				print "     Total breaking and entering                            65\n";
-				print "     Total Criminal Code traffic violations                148\n";
-				print "     Total Impaired Driving                                149\n";
-				print "     Total robbery                                          34\n";
-				print "     Total violent Criminal Code violations                  4\n";
-				print "     Shoplifting \$5,000 or under                            79\n";
-				print "     Total sexual violations against children               17\n\n";
+				print "\nViolation number: ";
 				$respond3 = <STDIN>;
 				chomp $respond3;
 				if ($respond3 == 39 || $respond3 == 84 || $respond3 == 161 || $respond3 == 21 || $respond3 == 128 || $respond3 == 65 || $respond3 == 148 || $respond3 == 149 || $respond3 == 34 || $respond3 == 4 || $respond3 == 79 || $respond3 == 17) {
@@ -128,7 +82,7 @@ while ($programFlag == 0) {
 
 			$flag = 0;
 			while ($flag == 0) {
-				print "Please pick a year from 1998 to 2015\n";
+				print "Year (1998 - 2015): ";
 				$respond4 = <STDIN>;
 				chomp $respond4;
 				if ($respond4 >= 1998 && $respond4 <= 2015) {
@@ -137,50 +91,48 @@ while ($programFlag == 0) {
 			}   
 			$flag = 0;
 				
-			print "\n response 1 = $respond1\n";
-			print "\n response 2 = $respond2\n";
-			print "\n response 3 = $respond3\n";
-			print "\n response 4 = $respond4\n";
+			print "\nresponse 1 = $respond1\n";
+			print "\nresponse 2 = $respond2\n";
+			print "\nresponse 3 = $respond3\n";
+			print "\nresponse 4 = $respond4\n";
 		     
-		} elsif ($setQ == 3) {
-			print "\nWhat\n";
+		} elsif ($setQ == 2) {
+			print "\nFILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) percent change in (violation) from (year) to (year)?\n";
+			
 			while ($flag == 0) {
-				print "0. Province\n";
-				print "1. City\n";
+				print "\nProvince or city? (1 for province, 2 for city): ";
 				$respond1 = <STDIN>;
 				chomp $respond1;
-				if ($respond1 == 1 || $respond1 == 0) {
+				if (($respond1 == 1 || $respond1 == 2) && $respond1 != '') {
 					$flag = 1;
 				}
 			}
 			$flag = 0;
-			print "had the\n";
 			while ($flag == 0) {
-				print ("0. Highest\n");
-				print ("1. Lowest\n");
+				print "\nHighest or Lowest (1 for highest, 2 for lowest): ";
 				$respond2 = <STDIN>;
 				chomp $respond2;
-				if ($respond2 == 1 || $respond2 == 0) {
+				if (($respond2 == 1 || $respond2 == 2) && $respond2 != '') {
 					$flag = 1;
 				}
 			}
 			$flag = 0;
-			print "percent change in\n"; 
-			while ($flag == 0){
-				print "             \n\n~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
-				print "     Abduction under the age 14, not parent or guardian     39\n";
-				print "     Arson                                                  84\n";
-				print "     Dangerous vehicle operation, causing death            161\n";
-				print "     Luring a child                                         21\n";
-				print "     Participate in activity of terrorist group            128\n";
-				print "     Total breaking and entering                            65\n";
-				print "     Total Criminal Code traffic violations                148\n";
-				print "     Total Impaired Driving                                149\n";
-				print "     Total robbery                                          34\n";
-				print "     Total violent Criminal Code violations                  4\n";
-				print "     Shoplifting \$5,000 or under                            79\n";
-				print "     Total sexual violations against children               17\n\n";
-            
+			print "\n\n     ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
+			print "     Abduction under the age 14, not parent or guardian     39\n";
+			print "     Arson                                                  84\n";
+			print "     Dangerous vehicle operation, causing death            161\n";
+			print "     Luring a child                                         21\n";
+			print "     Participate in activity of terrorist group            128\n";
+			print "     Total breaking and entering                            65\n";
+			print "     Total Criminal Code traffic violations                148\n";
+			print "     Total Impaired Driving                                149\n";
+			print "     Total robbery                                          34\n";
+			print "     Total violent Criminal Code violations                  4\n";
+			print "     Shoplifting \$5,000 or under                            79\n";
+			print "     Total sexual violations against children               17\n";
+				
+			while ($flag == 0){    
+				print "\nViolation number: ";
             	$respond3 = <STDIN>;
             	chomp $respond3;
             	if ($respond3 == 39 || $respond3 == 84 || $respond3 == 161 || $respond3 == 21 || $respond3 == 128 || $respond3 == 65 || $respond3 == 148 || $respond3 == 149 || $respond3 == 34 || $respond3 == 4 || $respond3 == 79 || $respond3 == 17) {
@@ -188,7 +140,44 @@ while ($programFlag == 0) {
             	}
         	}
         	#year
-    	}
+    	} elsif ($setQ == 3) {
+			print "\nFILL IN THE BLANKS:\nWhat was the (safest/least safe) (province/city) to (desired action) in (year)?\n";
+			while ($flag == 0) {
+				print "\nSafest or least safe? (1 for safest, 2 for least safe): ";
+				$respond1 = <STDIN>;
+				chomp $respond1;
+				if (($respond1 == 1 || $respond1 == 2) && $respond1 != '') {
+					$flag = 1;
+				}
+			}
+
+			$flag = 0;
+			while ($flag == 0) {
+				print "\nProvince or city? (1 for province, 2 for city): ";
+				$respond2 = <STDIN>;
+				chomp $respond2;
+				if (($respond2 == 1 || $respond2 == 2) && $respond2 != '') {
+					$flag = 1;
+				}
+			}
+			
+			print "\n\n     ~~~~~~ CRITERIA ~~~~~~\n\n";
+			print "     Live 				1\n";
+			print "		Raise a child       2\n";
+			print "     Drive               3\n";
+			print "     Start a Business    4\n";
+			print "     Own a home          5\n";
+			$flag = 0;
+			while ($flag == 0) {
+				$respond3 = <STDIN>;
+				chomp $respond3;
+				if ($respond3 != '' && ($respond3 == 1 || $respond3 == 2 || $respond3 == 3 || $respond3 == 4 || $respond3 == 0)) {
+					$flag = 1;
+				}
+			}
+			$flag = 0; 
+				#year
+		} 
     	$mainFlag = 0; 
 	}
 }
