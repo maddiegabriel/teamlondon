@@ -5,11 +5,23 @@
 #
 
 #
-#   PROBLEMS:
-#       doesn't read lines containing 'é' (Québec, Montréal) 
+#   ERRORS:
+#       > doesn't read lines containing 'é' (Québec, Montréal) 
 #           >> lines 558691 to 766105
-#       graphing
+#       > some values (insignificant/unaccurate) are just '..'
+#           >> skip these (cause error if found)
 #
+
+#
+#   TO DO:
+#       > return coordinate from subroutine
+#           >> split coordinate (string split), get first number
+#           >> associate number with name of location to print (1 = "Canada", etc.)
+#       > graphical output
+#       > answer second question (take 2 years, subtract values)
+#       > answer third question (take averages)
+#
+
 use strict;
 use warnings;
 use version;   our $VERSION = qv('5.16.0');
@@ -168,7 +180,7 @@ sub aggregate_data {
 
     # go through crime_data array (has crime hashes containing year, coordinate, value)
     foreach my $crime_record ( @crime_data ) {
-
+        #make a new hash for each year/coordinate/value in crime data array
         my %record = %{$crime_record};
 
         # if year in current hash = year given by user
@@ -176,7 +188,7 @@ sub aggregate_data {
             # sort thorugh coordinates we created using (province/city).violation.2
             foreach my $coordinate_key ( @coordinate_keys ) {
                 # if coordinate in current hash = coordinate we created 
-                if ($record{crime_data} eq $coordinate_key) {
+                if ($record{coordinate} eq $coordinate_key) {
                     # print Dumper(\%record);
 
                     # SORT VALUES!!! if not first loop..
@@ -185,13 +197,11 @@ sub aggregate_data {
                         # set current_value to the record value
                         if ($is_highest == 1 and $record{value} > $current_value) {
                             $current_value = $record{value}; 
-                            $current_location = $coordinate_key;      
                         }
                         # if user wants lower value, and value in hash is lesser than current lowest value
                         # set current_value to the record value
                         if ($is_highest == 0 and $record{value} < $current_value) {
                             $current_value = $record{value};  
-                            $current_location = $coordinate_key;      
                         }
                     # if first loop: set value in hash equal to current_value
                     } else {
@@ -245,15 +255,16 @@ print "Year (1998-2015): ";
 my $year = <STDIN>;
 chomp $year;
 
-my $result = aggregate_data($year, $violation_number, $is_province, $is_highest);
 
 # RETURN OUTPUT
 print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
-if($is_highest) {
-    print("The highest rate in $year is $result.\n");
-} else {
-    print("The lowest rate in $year is $result.\n");
-}
+print aggregate_data($year, $violation_number, $is_province, $is_highest);
+
+# if($is_highest) {
+#     print("The highest rate in $year is $result.\n");
+# } else {
+#     print("The lowest rate in $year is $result.\n");
+# }
 print "~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
 
 # # Lowest value in city
