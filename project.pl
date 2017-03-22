@@ -2,6 +2,7 @@
 
 #
 #   CIS*2250 Project: Team London
+#   Main script
 #
 
 #
@@ -221,7 +222,7 @@ sub aggregate_data {
 }
 
 # USER INTERFACE
-print "Hello. Welcome to our program xD. Ask us a question!\n";
+print "Hello. Welcome to our program! Ask us a question:\n\n";
 print "What (province/city) had the (highest/lowest) rate of (violation) in (year)?\n";
 
 # GET INPUT (chomp newlines xD)
@@ -233,7 +234,7 @@ print "Highest or Lowest (1 for highest, 0 for lowest): ";
 my $is_highest = <STDIN>;
 chomp $is_highest;
 
-print "         \n\n~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
+print "\n\n    ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
 print "     Abduction under the age 14, not parent or guardian     39\n";
 print "     Arson                                                  84\n";
 print "     Dangerous vehicle operation, causing death            161\n";
@@ -257,17 +258,17 @@ chomp $year;
 
 
 # RETURN OUTPUT
-print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
+print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 #print aggregate_data($year, $violation_number, $is_province, $is_highest);
 
  if($is_highest) {
-     print("\nThe highest rate of $violation_number in $year is ");
+     print("\nThe highest rate of violation #$violation_number in $year was ");
      print aggregate_data($year, $violation_number, $is_province, $is_highest);
  } else {
-     print("\nThe lowest rate of $violation_number in $year is ");
+     print("\nThe lowest rate of violation #$violation_number in $year was ");
      print aggregate_data($year, $violation_number, $is_province, $is_highest);
  }
-print "\n~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
+print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
 
 # # Lowest value in city
 #print aggregate_data("2003", "2", 0, 0), "\n";
@@ -277,5 +278,3 @@ print "\n~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
 # aggregate_data("2003", "2", 0, 1);
 # # Highest value in province
 # aggregate_data("2003", "2", 1, 1);
-
-# while(<>)
