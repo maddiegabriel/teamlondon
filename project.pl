@@ -258,14 +258,16 @@ chomp $year;
 
 # RETURN OUTPUT
 print "~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~\n";
-print aggregate_data($year, $violation_number, $is_province, $is_highest);
+#print aggregate_data($year, $violation_number, $is_province, $is_highest);
 
-# if($is_highest) {
-#     print("The highest rate in $year is $result.\n");
-# } else {
-#     print("The lowest rate in $year is $result.\n");
-# }
-print "~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
+ if($is_highest) {
+     print("\nThe highest rate of $violation_number in $year is ");
+     print aggregate_data($year, $violation_number, $is_province, $is_highest);
+ } else {
+     print("\nThe lowest rate of $violation_number in $year is ");
+     print aggregate_data($year, $violation_number, $is_province, $is_highest);
+ }
+print "\n~~~~~~~~~~~~~~~~~~~ LATER  ~~~~~~~~~~~~~~~~~~~\n";
 
 # # Lowest value in city
 #print aggregate_data("2003", "2", 0, 0), "\n";
