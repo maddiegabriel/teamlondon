@@ -25,7 +25,9 @@ use Text::CSV  1.32; # for parsing
 my $EMPTY = q{};
 my $SPACE = q{ };
 my $COMMA = q{,};
-my ($setQ, $geo, $high_low, $violation, $year) = 0;
+my ($setQ, $geo_q1, $high_low_q1, $violation_q1, $year_q1) = 0;
+my ($geo_q2, $high_low_q2, $violation_q2, $start_year, $end_year) = 0;
+my ($safe, $geo_q3, $action, $year_q3) = 0;
 my ($flag, $mainFlag, $exitFlag, $programFlag) = 0;
 my $location;
 my $result;
@@ -154,7 +156,7 @@ my %cities = (
 # QUESTION 1: function aggregates required data (from user input) and finds highest / lowest value
 sub question_one {
     # From user input: year, violation #, 0 (city) or 1 (province), 0 (low) or 1 (high)
-    my ($year, $violation, $geo, $high_low) = @_;
+    my ($year_q1, $violation_q1, $geo_q1, $high_low) = @_;
 
     # Build an array of possible crime_data values using:
     # ('provinces' or 'cities' hash value) + (the violation number) + '.2'
@@ -164,15 +166,15 @@ sub question_one {
 
     # if entered 1 for province, go through provinces hash
     # create array of desired coordinates using province.violation.2 
-    if ($geo == 1) {
+    if ($geo_q1 == 1) {
         for my $key (values %provinces) {
-            push @coordinate_keys, "$key.$violation.2";
+            push @coordinate_keys, "$key.$violation_q1.2";
         }
     # if entered 2 for city, go through cities hash
     # create array of desired coordinates using city.violation.2 
     } else {
         for my $key (values %cities) {
-            push @coordinate_keys, "$key.$violation.2";
+            push @coordinate_keys, "$key.$violation_q1.2";
         }
     }
 
@@ -182,7 +184,7 @@ sub question_one {
         my %record = %{$crime_record};
 
         # if year in current hash = year given by user
-        if ($record{year} eq $year) {
+        if ($record{year} eq $year_q1) {
             # sort thorugh coordinates we created using (province/city).violation.2
             foreach my $coordinate_key ( @coordinate_keys ) {
                 # if coordinate in current hash = coordinate we created 
@@ -193,13 +195,13 @@ sub question_one {
                     if ($current_value) {
                         # if user wants highest value, and value in hash is greater than current highest value
                         # set current_value to the record value
-                        if ($high_low == 1 and $record{value} > $current_value) {
+                        if ($high_low_q1== 1 and $record{value} > $current_value) {
                             $current_value = $record{value}; 
                             $current_location = $coordinate_key;
                         }
                         # if user wants lower value, and value in hash is lesser than current lowest value
                         # set current_value to the record value
-                        if ($high_low == 2 and $record{value} < $current_value) {
+                        if ($high_low_q1== 2 and $record{value} < $current_value) {
                             $current_value = $record{value}; 
                             $current_location = $coordinate_key; 
                         }
@@ -251,18 +253,18 @@ while ($programFlag == 0) {
             print "\nFILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) rate of (violation) in (year)?\n";
             while ($flag == 0) {
                 print "\nProvince or city? (1 for province, 2 for city): ";
-                $geo = <STDIN>;
-                chomp $geo;
-                if ( ($geo == 1 || $geo == 2) && $geo!= '') {
+                $geo_q1 = <STDIN>;
+                chomp $geo_q1;
+                if ( ($geo_q1 == 1 || $geo_q1 == 2) && $geo_q1!= '') {
                     $flag = 1;
                 }
             }
             $flag = 0;
             while ($flag == 0) { 
                 print "\nHighest or Lowest (1 for highest, 2 for lowest): ";
-                $high_low = <STDIN>;
-                chomp $high_low;
-                if (($high_low == 1 || $high_low == 2) && $high_low != '') {
+                $high_low_q1= <STDIN>;
+                chomp $high_low_q1;
+                if (($high_low_q1== 1 || $high_low_q1== 2) && $high_low_q1!= '') {
                     $flag = 1;
                 }
             }
@@ -282,18 +284,18 @@ while ($programFlag == 0) {
             print "     Total sexual violations against children               17\n";   
             while ($flag == 0){
                 print "\nViolation number: ";
-                $violation = <STDIN>;
-                chomp $violation;
-                if ($violation == 39 || $violation == 84 || $violation == 161 || $violation == 21 || $violation == 128 || $violation == 65 || $violation == 148 || $violation == 149 || $violation == 34 || $violation == 4 || $violation == 79 || $violation == 17) {
+                $violation_q1 = <STDIN>;
+                chomp $violation_q1;
+                if ($violation_q1 == 39 || $violation_q1 == 84 || $violation_q1 == 161 || $violation_q1 == 21 || $violation_q1 == 128 || $violation_q1 == 65 || $violation_q1 == 148 || $violation_q1 == 149 || $violation_q1 == 34 || $violation_q1 == 4 || $violation_q1 == 79 || $violation_q1 == 17) {
                     $flag = 1;
                 }
             }
             $flag = 0;
             while ($flag == 0) {
                 print "Year (1998 - 2015): ";
-                $year = <STDIN>;
-                chomp $year;
-                if ($year >= 1998 && $year <= 2015) {
+                $year_q1 = <STDIN>;
+                chomp $year_q1;
+                if ($year_q1 >= 1998 && $year_q1 <= 2015) {
                     $flag = 1;
                 }
             }   
@@ -302,7 +304,7 @@ while ($programFlag == 0) {
             # call function that finds what the user wants
             # it returns the coordinate of the place with the highest/lowest value of the violation
             # $result_coordinate = this coordinate
-            $result_coordinate = question_one($year, $violation, $geo, $high_low);
+            $result_coordinate = question_one($year_q1, $violation_q1, $geo_q1, $high_low_q1);
             #print "coordinate: $result_coordinate\n";
 
             # String split coordinate by period
@@ -404,126 +406,144 @@ while ($programFlag == 0) {
                 $location = "Victoria, British Columbia";
             } elsif($split_values[0] == 40) {
                 $location = "Yukon";
-            } elsif ($split_values[0] == 41) {
+            } elsif ($split_values[0] == 42) {
                 $location = "Nunavut";
             }
 
             # RETURN OUTPUT
             print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-            #print aggregate_data($year, $violation_number, $geo, $high_low);
-            #print "coordinate: $result_coordinate\n";
-            if($high_low == 1) {
-                print("\nThe highest rate of violation #$violation in $year was (value). It occured in $location.");
+            #print aggregate_data($year_q1, $violation_q1_number, $geo_q1, $high_low);
+            #print "\ncoordinate: $result_coordinate\n";
+            #print "location: $location\n";
+            if($high_low_q1== 1) {
+                print("\nThe highest rate of violation #$violation_q1 in $year_q1 was (value). It occured in $location.");
             } else {
-                print("\nThe lowest rate of violation #$violation in $year was (value). It occured in $location.");
+                print("\nThe lowest rate of violation #$violation_q1 in $year_q1 was (value). It occured in $location.");
             }
-            print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEE YA  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-        #
-        # SECOND QUESTION
-        #
-        # } elsif ($setQ == 2) {
-        #     print "\nFILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) percent change in (violation) from (year) to (year)?\n";
+            print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEE YA!  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+   
+        } elsif ($setQ == 2) {
+            print "\nFILL IN THE BLANKS:\nWhat (province/city) had the (highest/lowest) percent change in (violation) from (year) to (year)?\n";
             
-        #     while ($flag == 0) {
-        #         print "\nProvince or city? (1 for province, 2 for city): ";
-        #         $geo = <STDIN>;
-        #         chomp $geo;
-        #         if (($geo == 1 || $geo == 2) && $geo != '') {
-        #             $flag = 1;
-        #         }
-        #     }
-        #     $flag = 0;
-        #     while ($flag == 0) {
-        #         print "\nHighest or Lowest (1 for highest, 2 for lowest): ";
-        #         $high_low = <STDIN>;
-        #         chomp $high_low;
-        #         if (($high_low == 1 || $high_low == 2) && $high_low != '') {
-        #             $flag = 1;
-        #         }
-        #     }
-        #     $flag = 0;
-        #     print "\n\n     ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
-        #     print "     Abduction under the age 14, not parent or guardian     39\n";
-        #     print "     Arson                                                  84\n";
-        #     print "     Dangerous vehicle operation, causing death            161\n";
-        #     print "     Luring a child                                         21\n";
-        #     print "     Participate in activity of terrorist group            128\n";
-        #     print "     Total breaking and entering                            65\n";
-        #     print "     Total Criminal Code traffic violations                148\n";
-        #     print "     Total Impaired Driving                                149\n";
-        #     print "     Total robbery                                          34\n";
-        #     print "     Total violent Criminal Code violations                  4\n";
-        #     print "     Shoplifting \$5,000 or under                            79\n";
-        #     print "     Total sexual violations against children               17\n";
+            while ($flag == 0) {
+                print "\nProvince or city? (1 for province, 2 for city): ";
+                $geo_q2 = <STDIN>;
+                chomp $geo_q2 ;
+                if (($geo_q2  == 1 || $geo_q2  == 2) && $geo_q2  != '') {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
+            while ($flag == 0) {
+                print "\nHighest or Lowest (1 for highest, 2 for lowest): ";
+                $high_low_q2 = <STDIN>;
+                chomp $high_low_q2;
+                if (($high_low_q2 == 1 || $high_low_q2 == 2) && $high_low_q2 != '') {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
+            print "\n\n     ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
+            print "     Abduction under the age 14, not parent or guardian     39\n";
+            print "     Arson                                                  84\n";
+            print "     Dangerous vehicle operation, causing death            161\n";
+            print "     Luring a child                                         21\n";
+            print "     Participate in activity of terrorist group            128\n";
+            print "     Total breaking and entering                            65\n";
+            print "     Total Criminal Code traffic violations                148\n";
+            print "     Total Impaired Driving                                149\n";
+            print "     Total robbery                                          34\n";
+            print "     Total violent Criminal Code violations                  4\n";
+            print "     Shoplifting \$5,000 or under                            79\n";
+            print "     Total sexual violations against children               17\n";
                 
-        #     while ($flag == 0){    
-        #         print "\nViolation number: ";
-        #         $violation = <STDIN>;
-        #         chomp $violation;
-        #         if ($violation == 39 || $violation == 84 || $violation == 161 || $violation == 21 || $violation == 128 || $violation == 65 || $violation == 148 || $violation == 149 || $violation == 34 || $violation == 4 || $violation == 79 || $violation == 17) {
-        #             $flag = 1;
-        #         }
-        #     }
-        #     $flag = 0;
-        #     while ($flag == 0) {
-        #         print "Start year (1998 - 2015): ";
-        #         $start_year = <STDIN>;
-        #         chomp $start_year;
-        #         if ($start_year >= 1998 && $start_year <= 2015) {
-        #             $flag = 1;
-        #         }
-        #     }   
-        #     $flag = 0;
-        #     while ($flag == 0) {
-        #         print "End year (1998 - 2015): ";
-        #         $end_year = <STDIN>;
-        #         chomp $end_year;
-        #         if ($end_year >= 1998 && $end_year <= 2015) {
-        #             $flag = 1;
-        #         }
-        #     }   
-        #     $flag = 0;
-
-        #     $result = question_two($start_year, $end_year, $violation, $geo, $high_low);
-
-        # } elsif ($setQ == 3) {
-        #     print "\nFILL IN THE BLANKS:\nWhat was the (safest/least safe) (province/city) to (desired action) in (year)?\n";
-        #     while ($flag == 0) {
-        #         print "\nSafest or least safe? (1 for safest, 2 for least safe): ";
-        #         $respond1 = <STDIN>;
-        #         chomp $respond1;
-        #         if (($respond1 == 1 || $respond1 == 2) && $respond1 != '') {
-        #             $flag = 1;
-        #         }
-        #     }
-
-        #     $flag = 0;
-        #     while ($flag == 0) {
-        #         print "\nProvince or city? (1 for province, 2 for city): ";
-        #         $respond2 = <STDIN>;
-        #         chomp $respond2;
-        #         if (($respond2 == 1 || $respond2 == 2) && $respond2 != '') {
-        #             $flag = 1;
-        #         }
-        #     }
+            while ($flag == 0){    
+                print "\nViolation number: ";
+                $violation_q2 = <STDIN>;
+                chomp $violation_q2;
+                if ($violation_q2 == 39 || $violation_q2 == 84 || $violation_q2 == 161 || $violation_q2 == 21 || $violation_q2 == 128 || $violation_q2 == 65 || $violation_q2 == 148 || $violation_q2 == 149 || $violation_q2 == 34 || $violation_q2 == 4 || $violation_q2 == 79 || $violation_q2 == 17) {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
             
-        #     print "\n\n     ~~~~~~ CRITERIA ~~~~~~\n\n";
-        #     print "     Live                1\n";
-        #     print "     Raise a child       2\n";
-        #     print "     Drive               3\n";
-        #     print "     Start a Business    4\n";
-        #     print "     Own a home          5\n";
-        #     $flag = 0;
-        #     while ($flag == 0) {
-        #         $respond3 = <STDIN>;
-        #         chomp $respond3;
-        #         if ($respond3 != '' && ($respond3 == 1 || $respond3 == 2 || $respond3 == 3 || $respond3 == 4 || $respond3 == 0)) {
-        #             $flag = 1;
-        #         }
-        #     }
-        #     $flag = 0; 
-        #         #year
-        } 
+            while ($flag == 0) {
+                print "Start year (1998 - 2015): ";
+                $start_year = <STDIN>;
+                if ($start_year >= 1998 && $start_year <= 2015) {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
+            
+            while ($flag == 0) {
+                print "End year (1998 - 2015): ";
+                $end_year = <STDIN>;
+                if ($end_year >= 1998 && $end_year <= 2015) {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
+
+            print "\nresponse 1 = $geo_q2\n";
+            print "\nresponse 2 = $high_low_q2\n";
+            print "\nresponse 3 = $violation_q2\n";
+            print "\nresponse 4 = $start_year\n";
+            print "\nresponse 5 = $end_year";
+
+        } elsif ($setQ == 3) {
+            print "\nFILL IN THE BLANKS:\nWhat was the (safest/least safe) (province/city) to (desired action) in (year)?\n";
+            while ($flag == 0) {
+                print "\nSafest or least safe? (1 for safest, 2 for least safe): ";
+                $safe = <STDIN>;
+                chomp $safe;
+                if (($safe == 1 || $safe == 2) && $safe != '') {
+                    $flag = 1;
+                }
+            }
+
+            $flag = 0;
+            while ($flag == 0) {
+                print "\nProvince or city? (1 for province, 2 for city): ";
+                $geo_q3 = <STDIN>;
+                chomp $geo_q3;
+                if (($geo_q3 == 1 || $geo_q3 == 2) && $geo_q3 != '') {
+                    $flag = 1;
+                }
+            }
+            
+            print "\n\n     ~~~~~~ CRITERIA ~~~~~~\n\n";
+            print "     Live                1\n";
+            print "     Raise a child       2\n";
+            print "     Drive               3\n";
+            print "     Start a Business    4\n";
+            print "     Own a home          5\n";
+            $flag = 0;
+            while ($flag == 0) {
+                print "\nWhich criteria are you interested in? ";
+                $action = <STDIN>;
+                chomp $action;
+                if ($action != '' && ($action == 1 || $action == 2 || $action == 3 || $action == 4 || $action == 0)) {
+                    $flag = 1;
+                }
+            }
+            $flag = 0; 
+                
+            while ($flag == 0) {
+                print "Year (1998 - 2015): ";
+                $year_q3 = <STDIN>;
+                if ($year_q3 >= 1998 && $year_q3 <= 2015) {
+                    $flag = 1;
+                }
+            }
+            $flag = 0;
+    
+            print "\nresponse 1 = $safe\n";
+            print "\nresponse 2 = $geo_q3\n";
+            print "\nresponse 3 = $action\n";
+            print "\nresponse 4 = $year_q3\n";
+        }
+
         $mainFlag = 0; 
     }
 }
