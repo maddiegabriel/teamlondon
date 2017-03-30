@@ -14,7 +14,7 @@ my $SPACE = q{ };
 my $COMMA = q{,};
 my ($setQ, $geo_q1, $high_low_q1, $violation_q1, $year_q1) = 0;
 my ($geo_q2, $high_low_q2, $violation_q2, $start_year, $end_year) = 0;
-my ($safe, $geo_q3, $action, $year_q3) = 0;
+my ($high_low_q3, $n, $geo_q3, $violation_q3, $year_q3) = 0;
 my ($flag, $mainFlag, $exitFlag, $programFlag) = 0;
 my $location;
 my @split_values;
