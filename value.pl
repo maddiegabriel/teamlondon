@@ -26,6 +26,7 @@ my @crime_data; # array of hashes; each hash contains the (year/coordinate/value
 my $line_count = 0;
 my @result_q1;
 my $violation_name;
+my $i;
 
 # open file (real file: crime_data.csv, test file: test_data.csv)
 open my $data_fh, '<', 'crime_data.csv'
@@ -209,7 +210,7 @@ while ($programFlag == 0) {
         print "\nQuestion Set 2: What location had the highest/lowest percent change in a specific violation between two years?\n";
         print "\nQuestion Set 3: What was the safest/least safe place to do different things in Canada in a specific year?\n";
         
-        print "\n\nWould you like to pick Quesiton Set 1, 2 or 3? ";
+        print "\n\nWould you like to pick Question Set 1, 2 or 3? ";
         $setQ = <STDIN>;
         chomp $setQ;
 
@@ -476,7 +477,7 @@ while ($programFlag == 0) {
             while ($flag == 0) {
                 print "End year (1998 - 2015): ";
                 $end_year = <STDIN>;
-                if ($end_year >= 1998 && $end_year <= 2015) {
+                if ($end_year >= 1998 && $end_year <= 2015 && $end_year > $start_year) {
                     $flag = 1;
                 }
             }
@@ -503,10 +504,10 @@ while ($programFlag == 0) {
             }
             $flag = 0;
             while ($flag == 0) { 
-                print "\nTop/botton n... n = ?";
+                print "\nn = ? ";
                 $n = <STDIN>;
                 chomp $n;
-                if (($n== 1 || $n == 2) && $n != '') {
+                if ($n > 0 && $n != '') {
                     $flag = 1;
                 }
             }
@@ -528,162 +529,61 @@ while ($programFlag == 0) {
                 print "\nViolation number: ";
                 $violation_q3 = <STDIN>;
                 chomp $violation_q3;
-                if ($violation_q1 == 39 || $violation_q1 == 84 || $violation_q1 == 161 || $violation_q1 == 21 || $violation_q1 == 128 || $violation_q1 == 65 || $violation_q1 == 148 || $violation_q1 == 149 || $violation_q1 == 34 || $violation_q1 == 4 || $violation_q1 == 79 || $violation_q1 == 17) {
+                if ($violation_q3 == 39 || $violation_q3 == 84 || $violation_q3 == 161 || $violation_q3 == 21 || $violation_q3 == 128 || $violation_q3 == 65 || $violation_q3 == 148 || $violation_q3 == 149 || $violation_q3 == 34 || $violation_q3 == 4 || $violation_q3 == 79 || $violation_q3 == 17) {
                     $flag = 1;
                 }
             }
             #violation names
-            if($violation_q1 == 39) {
+            if($violation_q3 == 39) {
                 $violation_name = "Abduction under the age 14, not parent or guardian";
-                } elsif($violation_q1 == 84) {
+                } elsif($violation_q3 == 84) {
                     $violation_name = "Arson";
-                } elsif($violation_q1 == 161) {
+                } elsif($violation_q3 == 161) {
                     $violation_name = "Dangerous vehicle operation, causing death";
-                } elsif($violation_q1 == 21) {
+                } elsif($violation_q3 == 21) {
                     $violation_name = "Luring a child";
-                } elsif($violation_q1 == 128) {
+                } elsif($violation_q3 == 128) {
                     $violation_name = "Participate in activity of terrorist group";
-                } elsif($violation_q1 == 65) {
+                } elsif($violation_q3 == 65) {
                     $violation_name = "Total breaking and entering";
-                } elsif($violation_q1 == 148) {
+                } elsif($violation_q3 == 148) {
                     $violation_name = "Total Criminal Code traffic violations";
-                } elsif($violation_q1 == 149) {
+                } elsif($violation_q3 == 149) {
                     $violation_name = "Total Impaired Driving";
-                } elsif($violation_q1 == 34) {
+                } elsif($violation_q3 == 34) {
                     $violation_name = "Total robbery ";
-                } elsif($violation_q1 == 4) {
+                } elsif($violation_q3 == 4) {
                     $violation_name = "Total violent Criminal Code violations";
-                } elsif($violation_q1 == 79) {
+                } elsif($violation_q3 == 79) {
                     $violation_name = "Shoplifting \$5,000 or under";
-                } elsif($violation_q1 == 17) {
+                } elsif($violation_q3 == 17) {
                     $violation_name = "Total sexual violations against children ";
             }
 
             $flag = 0;
             while ($flag == 0) {
                 print "Year (1998 - 2015): ";
-                $year_q1 = <STDIN>;
-                chomp $year_q1;
-                if ($year_q1 >= 1998 && $year_q1 <= 2015) {
+                $year_q3 = <STDIN>;
+                chomp $year_q3;
+                if ($year_q3 >= 1998 && $year_q3 <= 2015) {
                     $flag = 1;
                 }
             }   
             $flag = 0;
 
-            # call function that finds what the user wants; it returns the coordinate of the place with the highest/lowest value of the violation, as well as the value itself.
-            #print question_one($year_q1, $violation_q1, $geo_q1, $high_low_q1);
-            
-            @result_q1 = question_one($year_q1, $violation_q1, $geo_q1, $high_low_q1);
-            #print "RESULT ARRAY:: @result_q1";     #print "result_q1[0] :: $result_q1[0]\n"; #print "result_q1[1] :: $result_q1[1]\n";
-            
-            # String split coordinate by period - this makes each number of the coordinate an element in the array @split_values
-            @split_values = split (/\./, $result_q1[0]);
-            # extract location number from coordinate (first element of split_values array) - it corresponds to a location string; this is for printing nicely
-            #print "$split_num[0]"; #print "$split_values[0]";
-            if ($split_values[0] == 41) {
-                $location = "The Northwest Territories";  
-                } elsif ($split_values[0] == 2) {
-                $location = "Newfoundland and Labrador";
-                } elsif ($split_values[0] == 3) {
-                    $location = "St. John's, Newfoundland and Labrador";
-                } elsif ($split_values[0] == 4) {
-                    $location = "Prince Edward Island";
-                } elsif ($split_values[0] == 5) {
-                    $location = "Nova Scotia";
-                } elsif ($split_values[0] == 6) {
-                    $location = "Halifax, Nova Scotia";
-                } elsif ($split_values[0] == 7) {
-                    $location = "New Brunswick";
-                } elsif ($split_values[0] == 43) {
-                    $location = "Moncton, New Brunswick";
-                } elsif ($split_values[0] == 8) {
-                    $location = "Saint John, New Brunswick";
-                } elsif ($split_values[0] == 9) {
-                    $location = "Quebec";
-                } elsif ($split_values[0] == 10) {
-                    $location = "Saguenay, Quebec";
-                } elsif ($split_values[0] == 11) {
-                    $location = "Québec, Quebec";
-                } elsif ($split_values[0] == 12) {
-                    $location = "Sherbrooke, Quebec";
-                } elsif ($split_values[0] == 13) {
-                    $location = "Trois-Rivières, Quebec";
-                } elsif ($split_values[0] == 14) {
-                    $location = "Montréal, Quebec";
-                } elsif ($split_values[0] == 15) {
-                    $location = "Ottawa Gatineau Quebec";
-                } elsif ($split_values[0] == 16) {
-                    $location = "Ontario";
-                } elsif ($split_values[0] == 17) {
-                    $location = "Ottawa Gatineau Ontario/Quebec";
-                } elsif ($split_values[0] == 18) {
-                    $location = "Ottawa Gatineau Ontario";
-                } elsif ($split_values[0] == 27) {
-                    $location = "Kingston, Ontario";
-                } elsif ($split_values[0] == 44) {
-                    $location = "Peterborough, Ontario";
-                } elsif ($split_values[0] == 19) {
-                    $location = "Toronto, Ontario";
-                } elsif ($split_values[0] == 20) {
-                    $location = "Hamilton, Ontario";
-                } elsif ($split_values[0] == 21) {
-                    $location = "St.Catharines-Niagara, Ontario";
-                } elsif ($split_values[0] == 22) {
-                    $location = "Kitchener Cambridge Waterloo Ontario";
-                } elsif ($split_values[0] == 45) {
-                    $location = "Brantford, Ontario";
-                } elsif ($split_values[0] == 46) {
-                    $location = "Guelph, Ontario";
-                } elsif ($split_values[0] == 23) {
-                    $location = "London, Ontario";
-                } elsif ($split_values[0] == 24) {
-                    $location = "Windsor, Ontario";
-                } elsif ($split_values[0] == 47) {
-                    $location = "Barrie, Ontario";
-                } elsif ($split_values[0] == 25) {
-                    $location = "Sudbury, Ontario";
-                } elsif ($split_values[0] == 26) {
-                    $location = "Thunder Bay, Ontario";
-                } elsif ($split_values[0] == 28) {
-                    $location = "Manitoba";
-                } elsif ($split_values[0] == 29) {
-                    $location = "Winnipeg, Manitoba";
-                } elsif ($split_values[0] == 30) {
-                    $location = "Saskatchewan";
-                } elsif ($split_values[0] == 31) {
-                    $location = "Regina, Saskatchewan";
-                } elsif ($split_values[0] == 32) {
-                    $location = "Saskatoon, Saskatchewan";
-                } elsif ($split_values[0] == 33) {
-                    $location = "Alberta";
-                } elsif ($split_values[0] == 34) {
-                    $location = "Calgary, Alberta";
-                } elsif ($split_values[0] == 35) {
-                    $location = "Edmonton, Alberta";
-                } elsif ($split_values[0] == 36) {
-                    $location = "British Columbia";
-                } elsif ($split_values[0] == 48) {
-                    $location = "Kelowna, British Columbia";
-                } elsif ($split_values[0] == 39) {
-                    $location = "Abbotsford-Mission, British Columbia";
-                } elsif ($split_values[0] == 37) {
-                    $location = "Vancouver, British Columbia";
-                } elsif ($split_values[0] == 38) {
-                    $location = "Victoria, British Columbia";
-                } elsif($split_values[0] == 40) {
-                    $location = "Yukon";
-                } elsif ($split_values[0] == 42) {
-                    $location = "Nunavut";
-            }
-
+            # call function that finds what the user wants
             # RETURN OUTPUT
             print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ RESULT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-            #print aggregate_data($year_q1, $violation_q1_number, $geo_q1, $high_low);
-            #print "\ncoordinate: $result_coordinate\n"; #print "location: $location\n";
-            if($high_low_q1== 1) {
-                print("\nThe highest rate of $violation_name in $year_q1 was $result_q1[1] per 100,000 population. It occured in $location.\n");
+            if($high_low_q3== 1) {
+                print("\nThe top $n (provinces/cities) with the highest rates of $violation_name in $year_q1 are:\n");
+                for($i = 1; $i <= $n; $i++) {
+                    print("\n$i. (location i): (value i) per 100,000 population.");
+                }
             } else {
-                print("\nThe lowest rate of $violation_name in $year_q1 was $result_q1[1] per 100,000 population. It occured in $location.\n");
+                print("\nThe bottom $n (provinces/cities) with the lowest rates of $violation_name in $year_q1 are:\n");
+                for($i = 1; $i <= $n; $i++) {
+                    print("\n$i. (location i): (value i) per 100,000 population.");
+                }
             }
             print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SEE YA! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
         
