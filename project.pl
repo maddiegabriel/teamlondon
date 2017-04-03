@@ -2,7 +2,7 @@
 
 #
 #   CIS*2250 Project: Team London
-#   Authors: Maddie Gabriel (0927580),, Anthony Ciappa (), Maham Hassan (), Brandon Goldstein ()
+#   Authors: Maddie Gabriel (0927580), Anthony Ciappa (), Maham Hassan (), Brandon Goldstein ()
 #   Main script
 #
 
