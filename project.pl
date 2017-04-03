@@ -38,7 +38,7 @@ print "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Welcome to Team London's
 print "\nPlease wait while your file loads for your usage pleasure!\n";
 print "\n25 seconds remaining...\n";
 # open file (real file: crime_data.csv, test file: test_data.csv)
-open my $data_fh, '<', 'test_data_2.csv'
+open my $data_fh, '<', 'crime_data.csv'
     or die "Unable to open names file: \n";
 
 @data = <$data_fh>; # store all contents of file in array 'data'
