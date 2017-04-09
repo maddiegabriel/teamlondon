@@ -2,7 +2,7 @@
 
 #
 #   CIS*2250 Project: Team London
-#   Authors: Maddie Gabriel (0927580), Anthony Ciappa (), Maham Hassan (), Brandon Goldstein ()
+#   Authors: Maddie Gabriel (0927580), Anthony Ciappa (0970986), Maham Hassan (0968728), Brandon Goldstein (0966782)
 #   Main script
 #
 
@@ -10,7 +10,6 @@ use strict;
 use version;   our $VERSION = qv('5.16.0');
 use Text::CSV  1.32; # for parsing
 use Statistics::R;
-use Data::Dumper; # to print hashes/arrays easily 
 
 my $COMMA = q{,};
 my $csv = Text::CSV->new({ sep_char => $COMMA }); # for parsing
@@ -25,7 +24,7 @@ my $graph_line;
 my @split_values;
 my @split_it;
 my @data; # array stores entire file to read through
-my @crime_data; # array of hashes; each hash contains the (year/coordinate/value) of a line, hash only stores .2 coordinates in array
+my @crime_data; # array of hashes; each hash contains the (year/coordinate.2/value) of a line
 my @result;
 my @split_coord;
 my %graph_hash;
@@ -39,7 +38,7 @@ print "\nPlease wait while your file loads for your usage pleasure!\n";
 print "\n25 seconds remaining...\n";
 # open file (real file: crime_data.csv, test file: test_data.csv)
 open my $data_fh, '<', 'crime_data.csv'
-    or die "Unable to open names file: \n";
+    or die "Unable to open crime data file :(\n";
 
 @data = <$data_fh>; # store all contents of file in array 'data'
 
@@ -56,8 +55,8 @@ foreach my $record ( @data ) {
         my @fields = $csv->fields();
         # regular expression searches through each coordinate; if coordinate is of the format 'x.2', store it in hash 'data'
         # push hash containing (year/coordinate/value) into array crime_data
-        if ($fields[5] =~ /\.2$/) {
-            if($fields[6] ne '..') {
+        if ( $fields[5] =~ /\.2$/ ) {
+            if( $fields[6] ne '..' ) {
                 my %data = (
                     year => $fields[0],
                     coordinate => $fields[5],
@@ -66,32 +65,28 @@ foreach my $record ( @data ) {
                 # create a REFERENCE to the hash data (memory location), so we can push it onto the array
                 # reference is: \%data, to get values we will dereference: ${$data[0]}{year}
                 push @crime_data, \%data;
-            } elsif ($fields[6] eq '..') {
+            } elsif ( $fields[6] eq '..' ) {
                 my %data = (
                     year => $fields[0],
                     coordinate => $fields[5],
                     value => 0
                 );
-                # create a REFERENCE to the hash data (memory location), so we can push it onto the array
-                # reference is: \%data, to get values we will dereference: ${$data[0]}{year}
                 push @crime_data, \%data;
             }
         }
     } else {
         warn "Line/record could not be parsed: $line_count.\n";
     }
-    #if ($line_count % 10000 == 0) {
-        #print "ON LINE: $line_count\n";     # check if reading file correctly: print every 10000th line if read correctly PRINT JOKES HERE
-    #} 
-    if ($line_count == 250000) {
+    # timer
+    if ( $line_count == 250000 ) {
         print "\n\n20 seconds remaining...\n";
-    } elsif ($line_count == 850000) {
+    } elsif ( $line_count == 850000 ) {
         print "\n\n15 seconds remaining... Half way there!\n";
-    } elsif ($line_count == 1250000) {
+    } elsif ( $line_count == 1250000 ) {
         print "\n\n10 seconds remaining...\n";
-    } elsif ($line_count == 1850000) {
+    } elsif ( $line_count == 1850000 ) {
         print "\n\n5 seconds remaining... Almost done!\n";
-    } elsif ($line_count == 2150000) {
+    } elsif ( $line_count == 2150000 ) {
         print "\n\nLoading Complete!\n";
     }
     $line_count++;
@@ -152,6 +147,7 @@ my %cities = (
     vancouver => 37,
     victoria => 38
 );
+# our chosen violation numbers
 my %vios = (
     total_violent => 4,
     murder_first_degree=> 6,
@@ -170,7 +166,6 @@ my %vios = (
     total_drug_violations => 231,
     total_criminal_code_traffic_violations => 148
 );
-
 #   user choice violations
 sub print_violations {
     print "\n\n     ~~~~~~~~~~~~~~~~~~~ VIOLATION NUMBERS ~~~~~~~~~~~~~~~~~~~\n\n";
@@ -190,6 +185,39 @@ sub print_violations {
     print "     Total Criminal Code traffic violations                148\n";
     print "     Total Impaired Driving                                149\n";
     print "     Total Drug Violations                                 231\n";
+}
+#   user choice provinces (question 5)
+sub print_provinces {
+    print "\n\n     ~~ LOCATION NUMBERS: PROVINCES ~~\n\n";
+    print "     Alberta                         33\n";
+    print "     British Columbia                36\n";
+    print "     Manitoba                        28\n";
+    print "     New Brunswick                    7\n";
+    print "     Newfoundland and Labrador        2\n";
+    print "     Nova Scotia                      5\n";
+    print "     Northwest Territories           41\n";
+    print "     Nunavut                         42\n";
+    print "     Ontario                         16\n";
+    print "     Prince Edward Island             4\n";
+    print "     Quebec                           9\n";
+    print "     Saskatchewan                    30\n";
+    print "     Yukon                           40\n";
+}
+#   user choice cities (question 5)
+sub print_cities {
+    print "\n\n     ~~~~~~ LOCATION NUMBERS: MAJOR CITIES ~~~~~~\n\n";
+    print "     St. John's, Newfoundland and Labrador       3\n";
+    print "     Halifax, Nova Scotia                        6\n";
+    print "     Moncton, New Brunswick                     43\n";
+    print "     Québec, Quebec                             11\n";
+    print "     Montréal, Quebec                           14\n";
+    print "     Toronto, Ontario                           19\n";
+    print "     Winnipeg, Manitoba                         29\n";
+    print "     Regina, Saskatchewan                       31\n";
+    print "     Calgary, Alberta                           34\n";
+    print "     Edmonton, Alberta                          35\n";
+    print "     Vancouver, British Columbia                37\n";
+    print "     Victoria, British Columbia                 38\n";
 }
 #   find violation string
 sub violation_names {
@@ -230,39 +258,6 @@ sub violation_names {
         $violation_name = "Total Criminal Code traffic violations";
     }
     return $violation_name;
-}
-#   user choice provinces
-sub print_provinces {
-    print "\n\n    ~~ LOCATION NUMBERS: PROVINCES ~~\n\n";
-    print "     Alberta                         33\n";
-    print "     British Columbia                36\n";
-    print "     Manitoba                        28\n";
-    print "     New Brunswick                    7\n";
-    print "     Newfoundland and Labrador        2\n";
-    print "     Nova Scotia                      5\n";
-    print "     Northwest Territories           41\n";
-    print "     Nunavut                         42\n";
-    print "     Ontario                         16\n";
-    print "     Prince Edward Island             4\n";
-    print "     Quebec                           9\n";
-    print "     Saskatchewan                    30\n";
-    print "     Yukon                           40\n";
-}
-#   user choice cities
-sub print_cities {
-    print "\n\n     ~~~~~~ LOCATION NUMBERS: MAJOR CITIES ~~~~~~\n\n";
-    print "     St. John's, Newfoundland and Labrador       3\n";
-    print "     Halifax, Nova Scotia                        6\n";
-    print "     Moncton, New Brunswick                     43\n";
-    print "     Québec, Quebec                             11\n";
-    print "     Montréal, Quebec                           14\n";
-    print "     Toronto, Ontario                           19\n";
-    print "     Winnipeg, Manitoba                         29\n";
-    print "     Regina, Saskatchewan                       31\n";
-    print "     Calgary, Alberta                           34\n";
-    print "     Edmonton, Alberta                          35\n";
-    print "     Vancouver, British Columbia                37\n";
-    print "     Victoria, British Columbia                 38\n";
 }
 #   find location string
 sub location_name {
@@ -364,7 +359,6 @@ sub location_name {
     } elsif ($coordinate_location == 42) {
         $location = "Nunavut";
     }
-    
     return $location;
 }
 
@@ -374,7 +368,6 @@ sub question_one_three {
     my @coordinate_keys;
     my $current_value = 0;
     my $current_location;
-    my @found_records;
     my @coords;
     my @values;
     my $array_size = 0;
@@ -389,23 +382,21 @@ sub question_one_three {
             push @coordinate_keys, "$key.$violation.2";
         }
     }
+    # find matching values to user specifications
     foreach my $crime_record ( @crime_data ) {
         my %record = %{$crime_record};
         if ($record{year} eq $year) {
             foreach my $coordinate_key ( @coordinate_keys ) {
                 if ($record{coordinate} eq $coordinate_key) {
                     $current_value = $record{value};
-                    push(@found_records, "$current_value,$coordinate_key");
+                    push(@values, $current_value);
+                    push(@coords,$coordinate_key);
                     $array_size++;
                 }
             }
         }
     }
-    foreach my $k (0..$array_size) {
-        my @split_found = split(/\,/, $found_records[$k]);
-        push(@values, $split_found[0]);
-        push(@coords, $split_found[1]);
-    }
+    # bubble sort values and coordinates simultaneously (descending order)
     while (1 == 1) {
         $not_complete = 0;
         foreach my $j (0 .. (scalar(@values) - 2)) {
@@ -413,11 +404,9 @@ sub question_one_three {
                 my $temp_one = $values[$j + 1];
                 $values[$j + 1] = $values[$j];
                 $values[$j] = $temp_one;
-
                 my $temp_two = $coords[$j + 1];
                 $coords[$j + 1] = $coords[$j];
                 $coords[$j] = $temp_two;
-                
                 $not_complete = 1;
             }
         }
@@ -450,10 +439,9 @@ sub question_two_four {
             push @coordinate_keys, "$key.$violation.2";
         }
     }
-
+    # find matching values to user specifications
     foreach my $crime_record ( @crime_data ) {
         my %record = %{$crime_record};
-
         if ($record{year} eq $start_year) {
             foreach my $coordinate_key ( @coordinate_keys ) {
                 if ( ($record{coordinate} eq $coordinate_key) && exists $record{value}) {
@@ -471,22 +459,17 @@ sub question_two_four {
                     push(@end_coords, $coordinate_key);
                     $array_size++;
                 }
-
             }
         }
     }
-    # print "START VALUES :: \n\n @start_values\n\n\n";
-    # print "END VALUES :: \n\n @end_values\n\n\n";  
-    # print "START COORDS :: \n\n @start_coords\n\n\n";
-    # print "END COORDS BEFORE :: \n\n @end_coords\n\n\n";  
-    # print "\nPERCENTS BEFORE::\n";
+    #calculate percent change for each location
     foreach my $m (0..$array_size) {
         if($start_coords[$m] == $end_coords[$m]) {
             $percents[$m] = ($end_values[$m] - $start_values[$m])/100;
-            #print "$percents[$m] ";
         }
     }
     my $j = 0;
+    # bubble sort percents and coordinates simultaneously (descending order)
     while (1 == 1) {
         $not_complete = 0;
         foreach $j (0 .. (scalar(@percents) - 2)) {
@@ -506,14 +489,6 @@ sub question_two_four {
             last;
         }
     }
-    # print "END COORDS AFTER :: \n\n @end_coords\n\n\n";  
-    # print "PERCENTS AFTER ::\n\n @percents\n\n";
-    # if($high_low == 1){
-    #     return ($end_coords[0], $percents[0]);
-    # } elsif ($high_low == 2) {
-    #     return ($end_coords[$j], $percents[$j]);
-    # }
-
     return (\@percents, \@end_coords);
 }
 
@@ -521,12 +496,9 @@ sub question_five {
     my ($geo, $start_year, $end_year) = @_;
 
     my $location_name = location_name($geo);
-
     my $txt_filename = $location_name."_".$start_year."_".$end_year.".txt";
     my $pdf_filename = $location_name."_".$start_year."_".$end_year.".pdf";
-    # print "TXT FILENAME :: $txt_filename\n";
-    # print "PDF FILENAME :: $pdf_filename\n";
-
+    
     open(my $fh, '>', $txt_filename) or die "Could not open file '$txt_filename'!";
     
     my @coordinate_keys;
