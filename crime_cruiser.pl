@@ -50,7 +50,7 @@ foreach my $record ( @data ) {
         next;
     }
     # parse each column of current line into $fields[n]
-    # $fields[0] = year; $fields[5] = coordinate (FORMAT: location.violation.statistic); $fields[6] = value (actual rate to be compared)
+    # $fields[0] = year; $fields[5] = coordinate; $fields[6] = value (actual rate to be compared)
     if ( $csv->parse($record) ) {
         my @fields = $csv->fields();
         # regular expression searches through each coordinate; if coordinate is of the format 'x.2', store it in hash 'data'
