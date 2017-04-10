@@ -12,7 +12,7 @@ http://www5.statcan.gc.ca/cansim/a26?lang=eng&id=2520051&p2=33#downloadTab
 
 To run, simply download the Perl script and the CSV file into the same folder on your computer. Rename the CSV file to crime_data.csv. Run the program from your terminal by typing:
 
-  >> perl crime_criuser.pl
+  >> perl crime_cruiser.pl
   
  and go wild! Graph PDFS are created in the same folder where the Perl script is. 
 
